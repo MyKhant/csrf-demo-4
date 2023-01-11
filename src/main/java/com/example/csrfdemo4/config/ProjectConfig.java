@@ -11,17 +11,19 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
 public class ProjectConfig {
 
     @Autowired
     private CustomCsrfTokenRepository customCsrfTokenRepository;
-//    @Bean
-//    public CsrfTokenRepository customTokenRepository(){
-//        return new CustomCsrfTokenRepository();
-//    }
+    @Bean
+    public CsrfTokenRepository customTokenRepository(){
+        return new CustomCsrfTokenRepository();
+    }
 
     @Bean
     public UserDetailsService userDetailsService(){
@@ -40,6 +42,16 @@ public class ProjectConfig {
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Throwable {
+
+        CsrfTokenRequestAttributeHandler handler = new CsrfTokenRequestAttributeHandler();
+        handler.setCsrfRequestAttributeName(null);
+        http.csrf(c -> {
+            c.csrfTokenRequestHandler(handler);
+            c.csrfTokenRepository(customTokenRepository());
+        }).authorizeHttpRequests()
+                .anyRequest()
+                .permitAll();
+        return http.build();
 //        http.authorizeHttpRequests()
 //                        .anyRequest().permitAll();
 //        http.formLogin()
@@ -53,6 +65,6 @@ public class ProjectConfig {
 //                c ->
 //                );
 //                .httpBasic();
-        return http.build();
+
     }
 }

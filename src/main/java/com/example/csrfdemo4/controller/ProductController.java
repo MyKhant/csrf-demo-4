@@ -16,13 +16,14 @@ public class ProductController {
         logger.info("Adding Product: "+name);
         return "main";
     }
-
+    //curl -H "X-IDENTIFIER:12345" http://localhost:8080/product/hello
+    //curl -X POST -H "X-IDENTIFIER:12345" -H "X-CSRF-TOKEN:5d690529-e060-4231-b8fe-57c4eaa379b3" http://localhost:8080/product/hello
     @ResponseBody
     @PostMapping("/hello")
     public String hello(){
         return "Hello!";
     }
-    //curl -X POST -H "X-IDENTIFIER:12345" -H "X-CSRF-TOKEN:" localhost:8080/product/bye
+
     @ResponseBody
     @GetMapping("/welcome")
     public String hello2(){
